@@ -5,6 +5,8 @@ import Task from './Task.js';
 import ReactDOM from 'react-dom';
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Meteor } from 'meteor/meteor';
+
+import { withQuery } from 'meteor/cultofcoders:grapher-react';
  
 // App component - represents the whole app
 class App extends Component {
@@ -82,3 +84,13 @@ export default withTracker(() => {
     };
   
   })(App);
+
+
+//   export default withQuery(
+//     props => {
+//         return getTasks.clone({});
+//     },
+//     {
+//         single: true,
+//     }
+// )(App);
