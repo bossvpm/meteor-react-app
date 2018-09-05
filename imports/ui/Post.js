@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import { Tasks } from '../api/tasks.js';
 import { Meteor } from 'meteor/meteor';
 import ReactDOM from 'react-dom';
 import { Comments } from '../api/comments.js';
@@ -8,6 +7,30 @@ import  Comment  from './Comment.js'
 
 // Post component - represents a single post item
 class Post extends Component {
+  constructor()
+  {
+    super();
+    if(this.state == null)
+      {
+        this.state = {
+          editPost: 0,
+        };
+      }
+  }
+
+  editThisPost() { 
+    this.setState({editPost : this.props.post._id });
+  }
+
+  handleEditPost(event)
+  {
+
+    event.preventDefault();
+    const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
+    let data =  { post: this.props.post._id, text: text};
+    Meteor.call('posts.update', this.props.post._id, text);
+    this.setState({editPost : 0 });
+  }
 
   deleteThisPost() {
     Meteor.call('posts.remove', this.props.post._id);
@@ -31,12 +54,28 @@ class Post extends Component {
 
   render() {
     return (
-      <li>
-        <button className="delete" onClick={this.deleteThisPost.bind(this)}>
-          &times;
+      <li className="post" id = {this.props.post._id}>
+        
+        <button className="button remove" onClick={this.deleteThisPost.bind(this)}>
+          Remove
+        </button>
+        <button className="button edit" onClick={this.editThisPost.bind(this)}>
+          Edit
         </button>
         <span className="text">
-          <strong>{this.props.post.username}</strong>: {this.props.post.text}
+          <strong>{this.props.post.username}</strong>: 
+          { this.state.editPost == this.props.post._id ?
+            <form className="new-post" onSubmit={this.handleEditPost.bind(this)} >
+              <input
+                type="text"
+                ref="textInput"
+                defaultValue = {this.props.post.text}
+              />
+            </form> : ''
+          }
+          { !this.state.editPost ?
+            this.props.post.text : ''
+          } 
         </span>
         <form className="new-comment" onSubmit={this.handleSubmit.bind(this)} >
               <input
@@ -45,7 +84,7 @@ class Post extends Component {
                 placeholder="Type to add new comments"
               />
         </form>
-        <ul>
+        <ul className="comment">
           {this.renderComments()}
         </ul>
       </li>

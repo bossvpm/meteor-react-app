@@ -21,4 +21,16 @@ Meteor.methods({
       check(postId, String);
       Posts.remove(postId);
     },
+    'posts.update'(postId, text) {
+      check(postId, String);
+      Posts.upsert(
+        {_id: postId},
+        {
+          text: text,
+          createdAt: new Date(), 
+          owner: this.userId,
+          username: Meteor.users.findOne(this.userId).username,
+        }
+      );
+    },
   });
