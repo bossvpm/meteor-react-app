@@ -7,6 +7,7 @@ import AccountsUIWrapper from './AccountsUIWrapper.js';
 import { Meteor } from 'meteor/meteor';
 
 import { withQuery } from 'meteor/cultofcoders:grapher-react';
+import ReactPaginate from 'react-paginate';
  
 // App component - represents the whole app
 class App extends Component {
@@ -14,6 +15,8 @@ class App extends Component {
     super(props);
     this.state = {
       hideCompleted: false,
+      offset: 0,
+      perPage: 5,
     };
   }
   handleSubmit(event) {
@@ -30,7 +33,13 @@ class App extends Component {
     });
   }
   renderTasks() {
+    console.log(this.state);
     let filteredTasks = this.props.tasks;
+    if(this.state.offset)
+    {
+      filteredTasks = this.state.tasks;
+    }
+    else{console.log('esle');}
     if (this.state.hideCompleted) {
       filteredTasks = filteredTasks.filter(task => !task.checked);
     }
@@ -38,6 +47,15 @@ class App extends Component {
       <Task key={task._id} task={task} />
     ));
   }
+
+  handlePageClick = (data) => {
+    let selected = data.selected;
+    console.log(selected);
+    let offset = selected * this.state.perPage;
+    this.setState({ offset: offset, tasks: Tasks.find({}, { sort: { createdAt: -1 }, skip: offset, limit: this.state.perPage  }).fetch() });
+    this.renderTasks();
+
+  };
 
   render() {
     return (
@@ -70,27 +88,26 @@ class App extends Component {
         <ul>
           {this.renderTasks()}
         </ul>
+        <ReactPaginate previousLabel={"previous"}
+          nextLabel={"next"}
+          breakClassName={"break-me"}
+          pageCount={this.props.incompleteCount/this.state.perPage}
+          marginPagesDisplayed={1}
+          pageRangeDisplayed={5}
+          onPageChange={this.handlePageClick}
+          containerClassName={"pagination"}
+          subContainerClassName={"pages pagination"}
+          activeClassName={"active"} />
       </div>
     );
   }
 }
 export default withTracker(() => {
-
     return {
   
-      tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
+      tasks: Tasks.find({}, { sort: { createdAt: -1 }, limit:5 }).fetch(),
       incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
       currentUser: Meteor.user(),
     };
   
   })(App);
-
-
-//   export default withQuery(
-//     props => {
-//         return getTasks.clone({});
-//     },
-//     {
-//         single: true,
-//     }
-// )(App);

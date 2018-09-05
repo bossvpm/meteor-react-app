@@ -21,14 +21,8 @@ export default class Comment extends Component {
         <button className="delete" onClick={this.deleteThisComment.bind(this)}>
           &times;
         </button>
-        <input
-          type="checkbox"
-          readOnly
-          checked={!!this.props.comment.checked}
-          onClick={this.toggleChecked.bind(this)}
-        />
         <span className="text">
-          <strong>{this.props.comment.username}</strong>: {this.props.comment.text}
+          {this.props.comment.username}: {this.props.comment.text}
         </span>
       </li>
     );
