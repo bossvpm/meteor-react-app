@@ -2,23 +2,23 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
-export const Comments = new Mongo.Collection('comments');
+export const Posts = new Mongo.Collection('posts');
 Meteor.methods({
-    'comments.insert'(data) { 
-      // Make sure the user is logged in before inserting a comment
+    'posts.insert'(text) { 
+      check(text, String);
+      // Make sure the user is logged in before inserting a post
       if (! this.userId) {
         throw new Meteor.Error('not-authorized'); 
       }   
-      Comments.insert({ 
-        text: data.text,
-        post: data.post, 
+      Posts.insert({ 
+        text, 
         createdAt: new Date(), 
         owner: this.userId,
         username: Meteor.users.findOne(this.userId).username,
       });
     },
-    'comments.remove'(commentId) {
-      check(commentId, String);
-      Comments.remove(commentId);
+    'posts.remove'(postId) {
+      check(postId, String);
+      Posts.remove(postId);
     },
   });
