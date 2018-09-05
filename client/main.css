@@ -148,6 +148,10 @@ li.private {
   background: #eee;
   border-color: #ddd;
 }
+ul.pagination li.active
+{
+  background-color: #f44336;
+}
 
 header .hide-completed {
   float: right;
