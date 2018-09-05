@@ -55,13 +55,16 @@ class Post extends Component {
   render() {
     return (
       <li className="post" id = {this.props.post._id}>
-        
-        <button className="button remove" onClick={this.deleteThisPost.bind(this)}>
-          Remove
-        </button>
-        <button className="button edit" onClick={this.editThisPost.bind(this)}>
-          Edit
-        </button>
+        { this.props.currentUser != null && (this.props.post.owner === this.props.currentUser._id) ?
+          <div>
+            <button className="button remove" onClick={this.deleteThisPost.bind(this)}>
+              Remove
+            </button>
+            <button className="button edit" onClick={this.editThisPost.bind(this)}>
+              Edit
+            </button>
+          </div> : ''
+        }
         <span className="text">
           <strong>{this.props.post.username}</strong>: 
           { this.state.editPost == this.props.post._id ?
@@ -77,13 +80,15 @@ class Post extends Component {
             this.props.post.text : ''
           } 
         </span>
-        <form className="new-comment" onSubmit={this.handleSubmit.bind(this)} >
-              <input
-                type="text"
-                ref="textInput"
-                placeholder="Type to add new comments"
-              />
-        </form>
+        { this.props.currentUser != null ?
+          <form className="new-comment" onSubmit={this.handleSubmit.bind(this)} >
+                <input
+                  type="text"
+                  ref="textInput"
+                  placeholder="Type to add new comments"
+                />
+          </form> : '' 
+        }
         <ul className="comment">
           {this.renderComments()}
         </ul>
@@ -96,5 +101,6 @@ class Post extends Component {
 export default withTracker( props => {
   return {
     comments: Comments.find({post: props.post._id}, { sort: { createdAt: -1 } }).fetch(),
+    currentUser: Meteor.user(),
   };
 })(Post);
