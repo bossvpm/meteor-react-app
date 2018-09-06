@@ -43,7 +43,6 @@ class App extends Component {
         { sort: { createdAt: -1 }, skip: offset, limit: this.state.perPage }
       ).fetch()
     });
-    this.renderPosts();
   };
 
   render() {

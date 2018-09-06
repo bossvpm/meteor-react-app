@@ -17,7 +17,9 @@ class Post extends Component {
   }
 
   editThisPost() {
-    this.setState({ editPost: this.props.post._id });
+    if (this.props.post.owner === this.props.currentUser._id) {
+      this.setState({ editPost: this.props.post._id });
+    }
   }
 
   handleEditPost(event) {
@@ -31,7 +33,9 @@ class Post extends Component {
   }
 
   deleteThisPost() {
-    Meteor.call("posts.remove", this.props.post._id);
+    if (this.props.post.owner === this.props.currentUser._id) {
+      Meteor.call("posts.remove", this.props.post._id);
+    }
   }
 
   handleSubmit(event) {

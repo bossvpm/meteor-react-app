@@ -6,7 +6,12 @@ import { Posts } from "../api/posts.js";
 // Comment component - represents a single comment item
 class Comment extends Component {
   deleteThisComment() {
-    Meteor.call("comments.remove", this.props.comment._id);
+    if (
+      this.props.comment.owner === this.props.currentUser._id ||
+      this.props.post.owner === this.props.currentUser._id
+    ) {
+      Meteor.call("comments.remove", this.props.comment._id);
+    }
   }
 
   render() {
