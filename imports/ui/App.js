@@ -21,8 +21,10 @@ class App extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
-    Meteor.call("posts.insert", text);
-    ReactDOM.findDOMNode(this.refs.textInput).value = "";
+    if (text) {
+      Meteor.call("posts.insert", text);
+      ReactDOM.findDOMNode(this.refs.textInput).value = "";
+    }
   }
 
   renderPosts() {

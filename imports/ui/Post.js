@@ -23,9 +23,11 @@ class Post extends Component {
   handleEditPost(event) {
     event.preventDefault();
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
-    let data = { post: this.props.post._id, text: text };
-    Meteor.call("posts.update", this.props.post._id, text);
-    this.setState({ editPost: 0 });
+    if (text) {
+      let data = { post: this.props.post._id, text: text };
+      Meteor.call("posts.update", this.props.post._id, text);
+      this.setState({ editPost: 0 });
+    }
   }
 
   deleteThisPost() {
@@ -35,11 +37,13 @@ class Post extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
-    let data = {};
-    data.text = text;
-    data.post = this.props.post._id;
-    Meteor.call("comments.insert", data);
-    ReactDOM.findDOMNode(this.refs.textInput).value = "";
+    if (text) {
+      let data = {};
+      data.text = text;
+      data.post = this.props.post._id;
+      Meteor.call("comments.insert", data);
+      ReactDOM.findDOMNode(this.refs.textInput).value = "";
+    }
   }
 
   renderComments() {
